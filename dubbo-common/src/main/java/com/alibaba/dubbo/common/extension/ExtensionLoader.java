@@ -70,29 +70,29 @@ public class ExtensionLoader<T> {
     private static final String DUBBO_INTERNAL_DIRECTORY = DUBBO_DIRECTORY + "internal/";
 
     private static final Pattern NAME_SEPARATOR = Pattern.compile("\\s*[,]+\\s*");
-    
+    //缓存 对应类型得 extensionloader实列
     private static final ConcurrentMap<Class<?>, ExtensionLoader<?>> EXTENSION_LOADERS = new ConcurrentHashMap<Class<?>, ExtensionLoader<?>>();
 
     private static final ConcurrentMap<Class<?>, Object> EXTENSION_INSTANCES = new ConcurrentHashMap<Class<?>, Object>();
 
-    // ==============================
-
+    // 以上静态变量  全局缓存==============================
+    //当前接口类信息
     private final Class<?> type;
 
     private final ExtensionFactory objectFactory;
 
     private final ConcurrentMap<Class<?>, String> cachedNames = new ConcurrentHashMap<Class<?>, String>();
-    
+    //缓存接口所有实现
     private final Holder<Map<String, Class<?>>> cachedClasses = new Holder<Map<String,Class<?>>>();
 
     private final Map<String, Activate> cachedActivates = new ConcurrentHashMap<String, Activate>();
-
+    //缓存 接口adaptive类，（生成代码）
     private volatile Class<?> cachedAdaptiveClass = null;
-
+    //返回指定扩展 缓存实现
     private final ConcurrentMap<String, Holder<Object>> cachedInstances = new ConcurrentHashMap<String, Holder<Object>>();
-
+    //默认adaptive名称
     private String cachedDefaultName;
-
+    //缓存 当前接口 adaptive 实列
     private final Holder<Object> cachedAdaptiveInstance = new Holder<Object>();
     private volatile Throwable createAdaptiveInstanceError;
 
@@ -312,6 +312,7 @@ public class ExtensionLoader<T> {
 		    holder = cachedInstances.get(name);
 		}
 		Object instance = holder.get();
+		//双重锁检查  只有一份缓存
 		if (instance == null) {
 		    synchronized (holder) {
 	            instance = holder.get();

@@ -46,7 +46,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
 
     // 失败重试定时器，定时检查是否有请求失败，如有，无限次重试
     private final ScheduledFuture<?> retryFuture;
-
+    //失败注册服务 url
     private final Set<URL> failedRegistered = new ConcurrentHashSet<URL>();
 
     private final Set<URL> failedUnregistered = new ConcurrentHashSet<URL>();

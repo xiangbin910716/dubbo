@@ -22,6 +22,7 @@ public class ZkclientZookeeperClient extends AbstractZookeeperClient<IZkChildLis
 
 	public ZkclientZookeeperClient(URL url) {
 		super(url);
+		//连接zookeeper 127.0.0.1:2181
 		client = new ZkClient(url.getBackupAddress());
 		client.subscribeStateChanges(new IZkStateListener() {
 			public void handleStateChanged(KeeperState state) throws Exception {

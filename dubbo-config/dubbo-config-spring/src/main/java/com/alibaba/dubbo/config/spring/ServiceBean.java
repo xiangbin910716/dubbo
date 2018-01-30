@@ -70,7 +70,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     public static ApplicationContext getSpringContext() {
 	    return SPRING_CONTEXT;
 	}
-
+    //继承spring ApplicationContextAware 获取了注入 ApplicationContext对象得能力
 	public void setApplicationContext(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 		SpringExtensionFactory.addApplicationContext(applicationContext);
@@ -95,12 +95,13 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
 	        }
 		}
 	}
-
+    //实现spring BeanNameAware 接口，设置beanName，注册到beanFactory中
     public void setBeanName(String name) {
         this.beanName = name;
     }
 
     /**
+     * 实现spring ApplicationListener 接口 容器初始化完成 会有事件调用
      * 在刷新容器最后一步发布ContextRefreshEvent事件的时候，通知实现了ApplicationListener的类进行回调onApplicationEvent，dubbo会在这个方法中发布服务
      * @param event
      */
@@ -123,7 +124,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         }
         return supportedApplicationListener && (delay == null || delay.intValue() == -1);
     }
-
+    //初始化 ServiceBean得时候调用该方法  实现了 Spring InitializingBean 接口
     @SuppressWarnings({ "unchecked", "deprecation" })
 	public void afterPropertiesSet() throws Exception {
         if (getProvider() == null) {
@@ -254,7 +255,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
             export();
         }
     }
-
+    //实现了Spring DisposableBean 销毁bean得时候会调用该方法
     public void destroy() throws Exception {
         unexport();
     }

@@ -1,9 +1,9 @@
 package com.alibaba.dubbo.demo.provider;
 
+import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.extension.Adaptive;
 import com.alibaba.dubbo.common.extension.SPI;
 
-import java.net.URL;
 
 /**
  * <p>TODO</p>
@@ -22,7 +22,7 @@ import java.net.URL;
 @SPI("A")
 public interface SayHello {
 
-    @Adaptive({"A","B"})
+    @Adaptive("CHO")
     void sayHello(URL url);
 
 }

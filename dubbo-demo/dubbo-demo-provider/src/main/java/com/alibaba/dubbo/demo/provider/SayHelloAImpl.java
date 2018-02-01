@@ -1,6 +1,7 @@
 package com.alibaba.dubbo.demo.provider;
 
-import java.net.URL;
+
+import com.alibaba.dubbo.common.URL;
 
 /**
  * <p>TODO</p>

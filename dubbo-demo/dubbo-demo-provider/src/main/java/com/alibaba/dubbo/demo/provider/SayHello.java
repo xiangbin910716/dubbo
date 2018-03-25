@@ -19,10 +19,11 @@ import com.alibaba.dubbo.common.extension.SPI;
  * @Date Created in 2018年02月01日 14:38
  * @since 1.0
  */
-@SPI("A")
+@SPI("B")
 public interface SayHello {
 
     @Adaptive("CHO")
     void sayHello(URL url);
+
 
 }

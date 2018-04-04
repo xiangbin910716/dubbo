@@ -335,7 +335,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
     
 	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
 	private T createProxy(Map<String, String> map) {
-		URL tmpUrl = new URL("temp", "localhost", 0, map);
+        URL tmpUrl = new URL("temp", "localhost", 0, map);
 		final boolean isJvmRefer;
         if (isInjvm() == null) {
             if (url != null && url.length() > 0) { //指定URL的情况下，不做本地引用

@@ -454,7 +454,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
             contextPath = provider.getContextpath();
         }
         URL url = new URL(name, host, port, (contextPath == null || contextPath.length() == 0 ? "" : contextPath + "/") + path, map);
-
+        // 如果url使用的协议存在扩展，调用对应的扩展来修改原url。目前扩展有override，absent
         if (ExtensionLoader.getExtensionLoader(ConfiguratorFactory.class)
                 .hasExtension(url.getProtocol())) {
             url = ExtensionLoader.getExtensionLoader(ConfiguratorFactory.class)
@@ -485,9 +485,11 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                         if (logger.isInfoEnabled()) {
                             logger.info("Register dubbo service " + interfaceClass.getName() + " url " + url + " to registry " + registryURL);
                         }
-                        //根据服务具体实现，实现接口，以及registryUrl通过ProxyFactory将HelloServiceImpl封装成一个本地执行的Invoker
+                        // 通过代理工厂将url转化成invoker对象，proxyFactory的实现是JavassistProxyFactory
                         Invoker<?> invoker = proxyFactory.getInvoker(ref, (Class) interfaceClass, registryURL.addParameterAndEncoded(Constants.EXPORT_KEY, url.toFullString()));
-                        //将invoker导出为 exporter
+                        //这里invoker对象协议是registry，protocol根据协议找到RegisterProtocol实现类
+                        //ProtocolListenerWrapper -> ProtocolFilterWrapper -> RegistryProtocol
+                        //invoker是AbstractInvoker匿名类，真正实现方法是生成的wapper类调用ref实现方法
                         Exporter<?> exporter = protocol.export(invoker);
                         exporters.add(exporter);
                     }

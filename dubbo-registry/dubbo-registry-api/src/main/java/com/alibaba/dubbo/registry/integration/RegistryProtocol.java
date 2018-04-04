@@ -106,8 +106,9 @@ public class RegistryProtocol implements Protocol {
         //export invoker
         final ExporterChangeableWrapper<T> exporter = doLocalExport(originInvoker);
         //registry provider
-        final Registry registry = getRegistry(originInvoker);
-        final URL registedProviderUrl = getRegistedProviderUrl(originInvoker);
+        final Registry registry = getRegistry(originInvoker);//获取zk客户端引用（屏蔽了不同客户端差异） 检测是否zk可用
+        final URL registedProviderUrl = getRegistedProviderUrl(originInvoker);//过滤url注册真正得URL数据
+        //真正开始zk中注册节点数据
         registry.register(registedProviderUrl);
         // 订阅override数据
         // FIXME 提供者订阅时，会影响同一JVM即暴露服务，又引用同一服务的的场景，因为subscribed以服务名为缓存的key，导致订阅信息覆盖。
@@ -150,6 +151,7 @@ public class RegistryProtocol implements Protocol {
                 exporter = (ExporterChangeableWrapper<T>) bounds.get(key);
                 if (exporter == null) {
                     final Invoker<?> invokerDelegete = new InvokerDelegete<T>(originInvoker, getProviderUrl(originInvoker));
+                    //url=dubbo://10.30.25.67:20881/com.alibaba.dubbo.demo.DemoService?anyhost=true&application=demo-provider&dubbo=2.0.0&generic=false&interface=com.alibaba.dubbo.demo.DemoService&loadbalance=roundrobin&methods=sayHello&owner=william&pid=7500&side=provider&timeout=9000000&timestamp=1522312839589
                     exporter = new ExporterChangeableWrapper<T>((Exporter<T>)protocol.export(invokerDelegete), originInvoker);
                     bounds.put(key, exporter);
                 }

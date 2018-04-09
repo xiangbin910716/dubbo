@@ -103,7 +103,7 @@ public class RegistryProtocol implements Protocol {
     private final static Logger logger = LoggerFactory.getLogger(RegistryProtocol.class);
     
     public <T> Exporter<T> export(final Invoker<T> originInvoker) throws RpcException {
-        //export invoker
+        //export invoker netty端口暴露
         final ExporterChangeableWrapper<T> exporter = doLocalExport(originInvoker);
         //registry provider
         final Registry registry = getRegistry(originInvoker);//获取zk客户端引用（屏蔽了不同客户端差异） 检测是否zk可用

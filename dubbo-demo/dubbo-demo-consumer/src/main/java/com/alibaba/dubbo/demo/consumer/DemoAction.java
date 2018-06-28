@@ -29,14 +29,14 @@ public class DemoAction {
     }
 
 	public void start() throws Exception {
-        for (int i = 0; i < 1; i ++) {
+        for (int i = 0; i < 10; i ++) {
             try {
             	String hello = demoService.sayHello("world" + i);
                 System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + hello);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         }
 	}
 

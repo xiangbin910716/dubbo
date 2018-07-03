@@ -1,6 +1,5 @@
 package com.alibaba.dubbo.test.javassist;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import javassist.*;
 
 import java.lang.reflect.InvocationTargetException;

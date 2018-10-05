@@ -142,7 +142,7 @@ public class ExtensionLoader<T> {
      * This is equivalent to <pre>
      *     getActivateExtension(url, key, null);
      * </pre>
-     *
+     *在所有的激活中，要使用key 指定的扩展
      * @param url url
      * @param key url parameter key which used to get extension point names
      * @return extension list which are activated.
@@ -156,7 +156,7 @@ public class ExtensionLoader<T> {
      * This is equivalent to <pre>
      *     getActivateExtension(url, values, null);
      * </pre>
-     *
+     * 在所有的激活中 values指定的扩展
      * @see #getActivateExtension(com.alibaba.dubbo.common.URL, String[], String)
      * @param url url
      * @param values extension point names
@@ -170,7 +170,7 @@ public class ExtensionLoader<T> {
      * This is equivalent to <pre>
      *     getActivateExtension(url, url.getParameter(key).split(","), null);
      * </pre>
-     *
+     *在所有的激活中，要指定的group 外加 使用key 指定的扩展
      * @see #getActivateExtension(com.alibaba.dubbo.common.URL, String[], String)
      * @param url url
      * @param key url parameter key which used to get extension point names
@@ -184,7 +184,7 @@ public class ExtensionLoader<T> {
 
     /**
      * Get activate extensions.
-     *
+     *最后都调用了这个方法
      * @see com.alibaba.dubbo.common.extension.Activate
      * @param url url
      * @param values extension point names
@@ -196,11 +196,13 @@ public class ExtensionLoader<T> {
         List<String> names = values == null ? new ArrayList<String>(0) : Arrays.asList(values);
         if (! names.contains(Constants.REMOVE_VALUE_PREFIX + Constants.DEFAULT_KEY)) {
             getExtensionClasses();
-            for (Map.Entry<String, Activate> entry : cachedActivates.entrySet()) {
-                String name = entry.getKey();
+            //cachedActivates里放的map结构 接口实现扩展名:其上的Activate对象
+            for (Map.Entry<String, Activate> entry : cachedActivates.entrySet()) {//遍历所有Activate注解对象
+                String name = entry.getKey();//spi 扩展名
                 Activate activate = entry.getValue();
-                if (isMatchGroup(group, activate.group())) {
+                if (isMatchGroup(group, activate.group())) {//如果有group匹配
                     T ext = getExtension(name);// 获取扩展示例
+                    //name不在 values 指定之列，并且没排除name，并且activate的value 在url有对应参数，就算激活
                     if (! names.contains(name)
                             && ! names.contains(Constants.REMOVE_VALUE_PREFIX + name) 
                             && isActive(activate, url)) {
@@ -208,6 +210,7 @@ public class ExtensionLoader<T> {
                     }
                 }
             }
+            //排序Activate 具体实现在ActivateComparator里，实现了Comparator 接口compare方法
             Collections.sort(exts, ActivateComparator.COMPARATOR);
         }
         List<T> usrs = new ArrayList<T>();
@@ -215,12 +218,14 @@ public class ExtensionLoader<T> {
         	String name = names.get(i);
             if (! name.startsWith(Constants.REMOVE_VALUE_PREFIX)
             		&& ! names.contains(Constants.REMOVE_VALUE_PREFIX + name)) {
+                //遍历所有没有排除的扩展名
             	if (Constants.DEFAULT_KEY.equals(name)) {
             		if (usrs.size() > 0) {
 	            		exts.addAll(0, usrs);
 	            		usrs.clear();
             		}
             	} else {
+                    //通过扩展名，加载扩展添加到结果集
 	            	T ext = getExtension(name);
 	            	usrs.add(ext);
             	}
@@ -730,6 +735,7 @@ public class ExtensionLoader<T> {
     
     private Class<?> getAdaptiveExtensionClass() {
         getExtensionClasses();
+        //cachedAdaptiveClass 只有在类上注解为Adaptive时才有缓存。adaptive一般注解在方法上，
         if (cachedAdaptiveClass != null) {
             return cachedAdaptiveClass;
         }

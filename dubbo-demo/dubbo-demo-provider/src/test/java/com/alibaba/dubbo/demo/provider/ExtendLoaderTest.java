@@ -29,8 +29,8 @@ public class ExtendLoaderTest {
 
 
         SayHello sayHello = ExtensionLoader.getExtensionLoader(SayHello.class).getAdaptiveExtension();
-        Map<String,String> paramMap = new HashMap<>();
-        paramMap.put("CHO","B");
+        Map<String,String> paramMap = new HashMap<String,String>();
+        paramMap.put("CHO","A");
         URL url = new URL("dubbo","127.0.0.1",8089,paramMap);
         sayHello.sayHello(url);
     }
